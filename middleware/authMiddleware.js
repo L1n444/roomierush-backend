@@ -12,16 +12,32 @@ if (process.env.FIREBASE_SERVICE_ACCOUNT) {
     console.log('✅ Firebase credentials loaded from environment variable');
   } catch (error) {
     console.error('❌ Failed to parse FIREBASE_SERVICE_ACCOUNT:', error);
+    console.error('Error details:', error.message);
     process.exit(1);
   }
+} else if (process.env.NODE_ENV === 'production') {
+  // Production but no environment variable set
+  console.error('❌ FIREBASE_SERVICE_ACCOUNT environment variable is not set in production');
+  console.error('Please set this variable in your Railway dashboard');
+  process.exit(1);
 } else {
-  // Development: Load from file
+  // Development: Try to load from file
   try {
-    serviceAccount = require('../serviceAccountKey.json');
-    console.log('✅ Firebase credentials loaded from serviceAccountKey.json');
+    const fs = require('fs');
+    const path = require('path');
+    const keyPath = path.join(__dirname, '..', 'serviceAccountKey.json');
+    
+    if (fs.existsSync(keyPath)) {
+      serviceAccount = require('../serviceAccountKey.json');
+      console.log('✅ Firebase credentials loaded from serviceAccountKey.json');
+    } else {
+      console.error('❌ serviceAccountKey.json not found at:', keyPath);
+      console.error('For local development, create this file with your Firebase credentials');
+      console.error('For production, set FIREBASE_SERVICE_ACCOUNT environment variable');
+      process.exit(1);
+    }
   } catch (error) {
-    console.error('❌ Failed to load serviceAccountKey.json:', error);
-    console.error('Make sure serviceAccountKey.json exists in development or FIREBASE_SERVICE_ACCOUNT is set in production');
+    console.error('❌ Failed to load serviceAccountKey.json:', error.message);
     process.exit(1);
   }
 }
