@@ -9,6 +9,7 @@ router.get('/:uid/public', async (req, res) => {
   try {
     const { uid } = req.params;
 
+    
     console.log('Getting public profile for uid:', uid);
 
     connection = await pool.getConnection();
