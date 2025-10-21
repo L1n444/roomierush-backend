@@ -9,7 +9,6 @@ router.get('/landlord/:uid/subscription', authenticate, authorizeUser, async (re
   let connection;
   try {
     const { uid } = req.params;
-
     connection = await pool.getConnection();
     const [rows] = await connection.query(
       'SELECT * FROM subscriptions WHERE uid = ? ORDER BY createdAt DESC LIMIT 1',
