@@ -1,0 +1,9 @@
+# Firebase service account
+serviceAccountKey.json
+
+# Environment files
+.env
+
+# Node.js build and cache files
+node_modules/
+*.log
